@@ -6,6 +6,9 @@ import ConnectionErrorModal from "../ConnectModal/ConnectionErrorModal";
 import UnsupportedChainWalletConnect from "../ConnectModal/UnsupportedChainWalletConnect";
 import AccountInfoModal from "../ConnectModal/AccountInfoModal";
 import { ALL_SUPPORTED_CHAIN_IDS_EXTENDED } from "../../utils/constants";
+import { useDispatch } from "react-redux";
+import { updateEthereumBalance } from "../../redux/actions";
+import { convertToEther } from "../../utils/helpers";
 
 function ConnectionHandler({Component,pageProps}) {
 
@@ -15,22 +18,25 @@ function ConnectionHandler({Component,pageProps}) {
 
   const [accountModalState,setAccountModalState] = useState(false);
 
-  const { active,connector } = useWeb3React()
+  const { active,connector,library,account } = useWeb3React()
 
   const [errorShown,setErrorShown] = useState(false);
+
+  const dispatch = useDispatch();
 
   function toggleModal(){
     if(!active)
       setModalState(!modalState)
   }
 
-  useEffect(() => {
+  useEffect(async () => {
     if(active){
       connector.on('Web3ReactUpdate', (id)=>{
         if(!ALL_SUPPORTED_CHAIN_IDS_EXTENDED.includes[id]){
           setErrorShown(true)
         }
       });
+      dispatch(updateEthereumBalance(await convertToEther(library,account)))
     }
     return () => {
     }

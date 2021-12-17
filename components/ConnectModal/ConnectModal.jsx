@@ -85,6 +85,7 @@ function ConnectModal(props) {
     if(error instanceof UnsupportedChainIdError){
       deactivate()
       console.log(props)
+      localStorage.removeItem('walletconnect')
       props.toggleWalletConnectionError('An error occurred while connecting to your wallet!')
       console.log("error",error)
     }
