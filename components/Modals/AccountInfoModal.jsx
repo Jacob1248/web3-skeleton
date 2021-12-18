@@ -1,16 +1,10 @@
 import { useWeb3React } from "@web3-react/core";
-import React,{ useEffect } from 'react'
+import React from 'react'
 import BaseModal from "./BaseModal";
 
 
 function AccountInfoModal(props) {
   const { deactivate } = useWeb3React()
-  
-  useEffect(async () => {
-  
-    return () => {
-    }
-  },[])
   
   function openConnectionModal(){
     props.closeModal(false)

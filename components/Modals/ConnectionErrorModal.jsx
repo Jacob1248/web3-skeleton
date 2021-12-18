@@ -3,7 +3,6 @@ import { returnConnector } from "../../utils/connectors";
 import React,{ useEffect } from 'react'
 import { UserRejectedRequestError } from "@web3-react/injected-connector";
 import BaseModal from "./BaseModal";
-import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { MetamaskError } from "../../redux/actions";
 
@@ -16,7 +15,6 @@ function ConnectionErrorModal(props) {
   
   useEffect(async () => {
     if(active){
-      console.log(active,'here')
       dispatch(MetamaskError())
     }
     return () => {

@@ -1,14 +1,8 @@
-import React,{ useEffect } from 'react'
+import React from 'react'
 import { XIcon } from '@heroicons/react/solid'
 
 
 function BaseModal(props) {
-
-    useEffect(() => {
-        console.log("brobs",props)
-        return () => {
-        }
-    })
 
   function returnChildWithProps(){
       let propTemp = {...props}

@@ -1,7 +1,6 @@
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { returnConnector } from "../../utils/connectors";
-import React,{ useEffect } from 'react'
-import { XIcon } from '@heroicons/react/solid'
+import React from 'react'
 import { UserRejectedRequestError } from "@web3-react/injected-connector";
 import Web3 from "web3";
 import BaseModal from "./BaseModal";
@@ -9,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { WalletConnectError } from "../../redux/actions";
 
 function ConnectModal(props) {
-  const { active,activate,deactivate,connector,chainID } = useWeb3React()
+  const { activate,deactivate } = useWeb3React()
  
   const dispatch = useDispatch();
 

@@ -8,16 +8,10 @@ function NavBar(props) {
   const { active, account, chainId } = useWeb3React()
 
   const counter = useSelector((reducer) => reducer.ethData.ethBalance)
-  
-  useEffect(() => {
-    return () => {
-      
-    }
-  })
 
   return (
       <nav className="w-full flex flex-row justify-between p-2 items-center z-50 relative">
-        <span className="text-2xl">Zen Site</span>
+        <span className="text-2xl">Web3 Site</span>
         <div className="flex flex-row items-center">
             <button onClick={!active?props.toggleModal:()=>props.setAccountModalState(true)} className="font-bold py-1 px-2 border-2 border-black rounded-lg relative mr-4 max-w-xs overflow-hidden truncate" >  
               {
