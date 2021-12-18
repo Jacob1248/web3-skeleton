@@ -15,11 +15,11 @@ function MyApp({ Component, pageProps }) {
   
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
-      <WalletProvider>
-          <Provider store={store}>
-            <ConnectionHandler Component={Component} pageProps={pageProps}/>
-          </Provider>
-      </WalletProvider>
+      <Provider store={store}>
+        <WalletProvider>
+              <ConnectionHandler Component={Component} pageProps={pageProps}/>
+        </WalletProvider>
+      </Provider>
     </Web3ReactProvider>
   );
 }

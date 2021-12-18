@@ -1,10 +1,14 @@
 import React, { useEffect } from 'react'
 import { returnConnector } from '../../utils/connectors'
 import { useWeb3React } from '@web3-react/core'
-import { ALL_SUPPORTED_CHAIN_IDS } from '../../utils/constants'
+import { ALL_SUPPORTED_CHAIN_IDS_EXTENDED } from '../../utils/constants'
+import { useDispatch } from 'react-redux'
+import { MetamaskError } from '../../redux/actions'
 
 function WalletProvider({ children }) {
-  const { active, error, activate,connector } = useWeb3React()
+  const { active, error, activate } = useWeb3React()
+
+  const dispatch = useDispatch();
 
   useEffect(async () => {
       try{
@@ -18,7 +22,12 @@ function WalletProvider({ children }) {
         let metamaskAuthorized = await returnConnector(0).isAuthorized();
         if(metamaskAuthorized){
             if (metamaskAuthorized && !active && !error) {
-                activate(returnConnector(0))
+                if(!ALL_SUPPORTED_CHAIN_IDS_EXTENDED.includes(await returnConnector(0).getChainId())){
+                  dispatch(MetamaskError());
+                }
+                else{
+                    await activate(returnConnector(0))
+                }
             }
         }
       }

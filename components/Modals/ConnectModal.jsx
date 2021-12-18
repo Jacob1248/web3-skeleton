@@ -4,24 +4,14 @@ import React,{ useEffect } from 'react'
 import { XIcon } from '@heroicons/react/solid'
 import { UserRejectedRequestError } from "@web3-react/injected-connector";
 import Web3 from "web3";
+import BaseModal from "./BaseModal";
+import { useDispatch } from "react-redux";
+import { WalletConnectError } from "../../redux/actions";
 
 function ConnectModal(props) {
   const { active,activate,deactivate,connector,chainID } = useWeb3React()
  
-  useEffect(async () => {
-    if(active){
-      console.log(chainID)
-    }
-    return () => {
-    }
-  },[chainID])
-  
-  useEffect(async () => {
-    if(active){
-    }
-    return () => {
-    }
-  },[active])
+  const dispatch = useDispatch();
 
   async function connect(type) {
     try {
@@ -35,7 +25,7 @@ function ConnectModal(props) {
             });
             let connector = returnConnector(0);
             localStorage.removeItem('walletconnect');
-            await activate(connector,connectionError)
+            await activate(connector)
           } catch (error) {
             if (error.code === 4902) {
               try {
@@ -52,7 +42,7 @@ function ConnectModal(props) {
                 console.log(connector)
                 localStorage.removeItem('walletconnect');
                 (new Web3(connector)).disconnect()
-                await activate(connector,connectionError)
+                await activate(connector)
               } catch (addError) {
                 console.error(addError);
               }
@@ -73,7 +63,7 @@ function ConnectModal(props) {
       alert(ex)
     }
     finally{
-      props.setModalState(false);
+      props.closeModal(false);
     }
   }
 
@@ -84,10 +74,11 @@ function ConnectModal(props) {
     }
     if(error instanceof UnsupportedChainIdError){
       deactivate()
-      console.log(props)
+      // console.log(props)
       localStorage.removeItem('walletconnect')
-      props.toggleWalletConnectionError('An error occurred while connecting to your wallet!')
-      console.log("error",error)
+      // props.toggleWalletConnectionError('An error occurred while connecting to your wallet!')
+      // console.log("error",error)
+      dispatch(WalletConnectError('An error occurred while connecting to your wallet!'))
     }
     else{
       alert('An error occurred while connecting to your wallet!')
@@ -102,7 +93,7 @@ function ConnectModal(props) {
       if(error instanceof UnsupportedChainIdError){
         console.log("error",error)
         // props.setErrorShown(true);
-        props.setModalState(false);
+        props.closeModal(false);
         deactivate()
       }
       else{
@@ -111,24 +102,21 @@ function ConnectModal(props) {
   }
 
   return (
-    <div className='w-full h-screen flex flex-col items-center justify-center absolute top-0 left-0 z-10'>
-      <div className='flex flex-col content-center border-solid border-2 border-black-600 lg:w-128 xl:w-128 md:w-128 rounded p-6 relative   rounded-xl'>
-        <span className='text-2xl text-center mb-2'>Connect a Wallet</span>
-        <XIcon onClick={()=>props.setModalState(false)} className='w-5 h-5 absolute top-0 right-0 mt-2 mr-2 cursor-pointer'></XIcon>
-        <button onClick={()=>connect(0)} className='bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded h-16 relative'>
+    <BaseModal {...props}>
+        <span className='text-2xl text-center mb-2'>Account</span>
+        <button onClick={()=>connect(0)} className='bg-orange-500 hover:bg-orange-700 w-full text-white font-bold py-2 px-4 rounded h-16 relative'>
           Metamask
           <div className='absolute bottom-0 right-0 w-auto 	'>
             <img src="metamask.svg"></img>
           </div>
         </button>
-        <button onClick={()=>connect(1)} className='bg-blue-600 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded mt-4 relative h-16 overflow-hidden'>
+        <button onClick={()=>connect(1)} className='bg-blue-600 hover:bg-blue-900 w-full text-white font-bold py-2 px-4 rounded mt-4 relative h-16 overflow-hidden'>
           WalletConnect
           <div className='absolute bottom-0 right-0 w-auto -mr-4'>
             <img src="walletconnect.svg"></img>
           </div>
         </button>
-      </div>
-    </div>
+    </BaseModal>
   );
 }
 

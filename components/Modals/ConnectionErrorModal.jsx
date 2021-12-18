@@ -2,15 +2,22 @@ import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { returnConnector } from "../../utils/connectors";
 import React,{ useEffect } from 'react'
 import { UserRejectedRequestError } from "@web3-react/injected-connector";
+import BaseModal from "./BaseModal";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { MetamaskError } from "../../redux/actions";
 
 
 function ConnectionErrorModal(props) {
+
   const { active,activate,deactivate } = useWeb3React()
+
+  const dispatch = useDispatch();
   
   useEffect(async () => {
     if(active){
       console.log(active,'here')
-      props.toggleErrorModal()
+      dispatch(MetamaskError())
     }
     return () => {
     }
@@ -70,19 +77,16 @@ function ConnectionErrorModal(props) {
   }
 
   return (
-    <div className='w-full h-screen flex flex-col items-center justify-center absolute top-0 left-0 z-10'>
-      <div className='flex flex-col content-center border-solid border-2 border-black-600 lg:w-128 xl:w-128 md:w-128 rounded p-6 relative   rounded-xl'>
-        <span className='text-2xl text-center mb-2'>Error</span>
-        An error occured while connecting to the wallet, please click below to connect to the ethereum mainnet
-        
-        <button onClick={()=>connect()} className='bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded h-16 relative'>
-          Metamask
-          <div className='absolute bottom-0 right-0 w-auto 	'>
-            <img src="metamask.svg"></img>
-          </div>
-        </button>
-      </div>
-    </div>
+    <BaseModal {...props}>
+      <span className='text-2xl text-center mb-2'>Error</span>
+      <span>An error occured while connecting to the wallet, please click below to connect to the ethereum mainnet</span>      
+      <button onClick={connect} className='bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded h-16 relative'>
+        Metamask
+        <div className='absolute bottom-0 right-0 w-auto 	'>
+          <img src="metamask.svg"></img>
+        </div>
+      </button>
+    </BaseModal>
   );
 }
 

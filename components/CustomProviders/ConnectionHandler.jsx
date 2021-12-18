@@ -1,26 +1,22 @@
 import { useWeb3React } from "@web3-react/core";
 import React,{ useState,useEffect } from 'react'
-import ConnectModal from '../ConnectModal/ConnectModal';
+import ConnectModal from '../Modals/ConnectModal';
 import NavBar from '../NavBar/NavBar';
-import ConnectionErrorModal from "../ConnectModal/ConnectionErrorModal";
-import UnsupportedChainWalletConnect from "../ConnectModal/UnsupportedChainWalletConnect";
-import AccountInfoModal from "../ConnectModal/AccountInfoModal";
+import ConnectionErrorModal from "../Modals/ConnectionErrorModal";
+import UnsupportedChainWalletConnect from "../Modals/UnsupportedChainWalletConnect";
+import AccountInfoModal from "../Modals/AccountInfoModal";
 import { ALL_SUPPORTED_CHAIN_IDS_EXTENDED } from "../../utils/constants";
-import { useDispatch } from "react-redux";
-import { updateEthereumBalance } from "../../redux/actions";
+import { useDispatch, useSelector } from "react-redux";
+import { MetamaskError, updateEthereumBalance, WalletConnectError } from "../../redux/actions";
 import { convertToEther } from "../../utils/helpers";
 
 function ConnectionHandler({Component,pageProps}) {
 
   const [modalState,setModalState] = useState(false);
 
-  const [walletconnecterror,setConnectionError] = useState(false);
-
   const [accountModalState,setAccountModalState] = useState(false);
 
-  const { active,connector,library,account } = useWeb3React()
-
-  const [errorShown,setErrorShown] = useState(false);
+  const { active,connector,library,account,chainId,deactivate } = useWeb3React()
 
   const dispatch = useDispatch();
 
@@ -29,11 +25,15 @@ function ConnectionHandler({Component,pageProps}) {
       setModalState(!modalState)
   }
 
+  const metamaskError = useSelector((reducer) => reducer.ethData.metamaskError)
+  const walletConnectError = useSelector((reducer) => reducer.ethData.walletConnectError)
+
   useEffect(async () => {
     if(active){
       connector.on('Web3ReactUpdate', (id)=>{
-        if(!ALL_SUPPORTED_CHAIN_IDS_EXTENDED.includes[id]){
-          setErrorShown(true)
+        console.log(ALL_SUPPORTED_CHAIN_IDS_EXTENDED.includes(id.chainId))
+        if(!ALL_SUPPORTED_CHAIN_IDS_EXTENDED.includes(id.chainId)){
+          dispatch(MetamaskError())
         }
       });
       dispatch(updateEthereumBalance(await convertToEther(library,account)))
@@ -42,38 +42,28 @@ function ConnectionHandler({Component,pageProps}) {
     }
   }, [active])
 
-  useEffect(async () => {
-    return () => {
-    }
-  },[walletconnecterror])
-
-  function toggleErrorModal(){
-    setErrorShown(!errorShown);
-  }
-
-  function connectionErrorToggle(e){
-    console.log(e)
-    setConnectionError(e);
+  function walletConnectErrorToggle(message){
+    dispatch(WalletConnectError(!message?null:message))
   }
 
   return (
     <div className='relative flex flex-col'>
       {
-        errorShown?<ConnectionErrorModal setErrorShown={setErrorShown} toggleErrorModal={toggleErrorModal}></ConnectionErrorModal>
+        metamaskError?<ConnectionErrorModal></ConnectionErrorModal>
         :
         <>
-          <NavBar toggleModal={toggleModal} setErrorShown={setErrorShown} setAccountModalState={setAccountModalState}></NavBar>
+          <NavBar toggleModal={toggleModal} setAccountModalState={setAccountModalState}></NavBar>
           {
-            modalState?<ConnectModal setModalState={setModalState} toggleWalletConnectionError={connectionErrorToggle} setErrorShown={setErrorShown} toggleModal={toggleModal}></ConnectModal>:<></>
+            modalState?<ConnectModal closeModal={setModalState} toggleWalletConnectionError={walletConnectErrorToggle}></ConnectModal>:<></>
           }
           {
-            accountModalState?<AccountInfoModal setAccountModalState={setAccountModalState} setModalState={setModalState}></AccountInfoModal>:<></>
+            accountModalState?<AccountInfoModal closeModal={setAccountModalState} setModalState={setModalState}></AccountInfoModal>:<></>
           }
           <Component {...pageProps}/>
-      </>
+        </>
       }
       {
-        walletconnecterror?<UnsupportedChainWalletConnect toggleWalletConnectionError={connectionErrorToggle} errorMessage={walletconnecterror}></UnsupportedChainWalletConnect>:<></>
+        walletConnectError!==null?<UnsupportedChainWalletConnect closeModal={walletConnectErrorToggle} errorMessage={walletConnectError}></UnsupportedChainWalletConnect>:<></>
       }
     </div>
   );
