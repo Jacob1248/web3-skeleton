@@ -1,5 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
-import React,{ useState } from 'react'
+import React,{ useState,useEffect } from 'react'
 import ConnectModal from '../Modals/ConnectModal';
 import NavBar from '../NavBar/NavBar';
 import ConnectionErrorModal from "../Modals/ConnectionErrorModal";
@@ -29,6 +29,20 @@ function ConnectionHandler({Component,pageProps}) {
   function walletConnectErrorToggle(message){
     dispatch(WalletConnectError(!message?null:message))
   }
+
+  useEffect(() => {
+    setAccountModalState(false)
+    setModalState(false)
+    return () => {
+    }
+  }, [metamaskError])
+
+  useEffect(() => {
+    setAccountModalState(false)
+    setModalState(false)
+    return () => {
+    }
+  }, [walletConnectError])
 
   return (
     <div className='relative flex flex-col'>

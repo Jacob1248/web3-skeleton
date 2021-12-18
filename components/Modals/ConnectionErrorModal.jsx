@@ -78,7 +78,7 @@ function ConnectionErrorModal(props) {
     <BaseModal {...props}>
       <span className='text-2xl text-center mb-2'>Error</span>
       <span>An error occured while connecting to the wallet, please click below to connect to the ethereum mainnet</span>      
-      <button onClick={connect} className='bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded h-16 relative'>
+      <button onClick={connect} className='bg-orange-500 hover:bg-orange-700 text-white w-full font-bold py-2 px-4 rounded h-16 relative'>
         Metamask
         <div className='absolute bottom-0 right-0 w-auto 	'>
           <img src="metamask.svg"></img>
