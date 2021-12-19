@@ -18,7 +18,7 @@ export const returnConnector = (type) =>{
                 qrcode:true,
                 infuraId:INFURIA_ID,
                 pollingInterval:100
-            });;
+            });
         }
     }
 }

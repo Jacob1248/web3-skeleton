@@ -35,14 +35,7 @@ function ConnectionHandler({Component,pageProps}) {
     setModalState(false)
     return () => {
     }
-  }, [metamaskError])
-
-  useEffect(() => {
-    setAccountModalState(false)
-    setModalState(false)
-    return () => {
-    }
-  }, [walletConnectError])
+  }, [metamaskError,walletConnectError])
 
   return (
     <div className='relative flex flex-col'>

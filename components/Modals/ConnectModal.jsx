@@ -38,7 +38,6 @@ function ConnectModal(props) {
                   ],
                 });
                 let connector = returnConnector(0);
-                console.log(connector)
                 localStorage.removeItem('walletconnect');
                 (new Web3(connector)).disconnect()
                 await activate(connector)
@@ -55,6 +54,7 @@ function ConnectModal(props) {
       }
       else{
         let connector = returnConnector(1);
+        console.log(connector)
         await activate(connector,connectionErrorWalletConnect)
       }
     }catch (ex) {
